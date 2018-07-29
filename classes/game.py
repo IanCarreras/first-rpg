@@ -1,7 +1,9 @@
 import random
+from .magic import Spell
+import pprint
 
 class Person:
-    def __init__(self, hp, mp, atk, df, magic):
+    def __init__(self, hp, mp, atk, df, magic, items):
         self.maxhp = hp
         self.hp = hp
         self.maxmp = mp
@@ -10,8 +12,11 @@ class Person:
         self.atkh = atk + 10
         self.df = df
         self.magic = magic
-        self.actions = ["Attack", "Magic"]
+        self.items = items
+        self.actions = ["Attack", "Magic", "Items"]
 
+    def is_alive(self):
+        return self.hp > 0
 
     def generate_damage(self):
         return random.randrange(self.atkl, self.atkh)
@@ -26,6 +31,11 @@ class Person:
         if self.hp < 0:
             self.hp = 0
         return self.hp
+
+    def heal(self, dmg):
+        self.hp += dmg
+        if self.hp > self.maxhp:
+            self.hp = self.maxhp
 
     def get_hp(self):
         return self.hp
@@ -42,12 +52,6 @@ class Person:
     def reduce_mp(self, cost):
         self.mp -= cost
 
-    def get_spell_nam(self, i):
-        return self.magic[i]["name"]
-
-    def get_spell_mp_cost(self, i):
-        return self.magic[i]["cost"]
-
     def choose_action(self):
         i = 1
         print("Actions")
@@ -58,6 +62,15 @@ class Person:
     def choose_magic(self):
         i = 1
         print("Magic")
-        for spell in self.magic:
-            print(str(i), spell["name"], "cost:", str(spell["cost"]))
+        for item in self.magic:
+            print(i, item.name, "(cost:", str(item.cost) + ")", "(dmg:", str(item.dmg) + ")")
             i += 1
+        print("0 back to actions")
+
+    def choose_item(self):
+        i = 1
+        print("Items")
+        for item in self.items:
+            print(i, item["item"].name, ":", item["item"].description, "x" + str(item["quantity"]))
+            i += 1
+        print("0 back to actions")
