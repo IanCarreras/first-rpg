@@ -2,17 +2,9 @@ from classes.game import Person
 import random
 from classes.magic import Spell
 from classes.inventory import Item
+import classes.magic as magic
 
 def play():
-
-    fire = Spell("Fire", 10, 100, "black")
-    thunder = Spell("Thunder", 10, 100, "black")
-    blizzard = Spell("Blizzard", 10, 100, "black")
-    quake = Spell("Quake", 15, 150, "black")
-    meteor = Spell("Meteor", 20, 200, "black")
-
-    cure = Spell("Cure", 12, 120, "white")
-    cura = Spell("Cura", 18, 200, "white")
 
     potion = Item("Potion", "potion", "Heals 50 HP", 50)
     hipotion = Item("Hi-potion", "potion", "Heals 100 HP", 100)
@@ -22,7 +14,7 @@ def play():
 
     grenade = Item("Grenade", "attack", "Deals 500 damage", 500)
 
-    player_magic = [fire, thunder, meteor, cura]
+    player_magic = [magic.Fire(), magic.Thunder(), magic.Meteor(), magic.Cura()]
     player_items = [{"item": potion, "quantity": 10},
                     {"item": superpotion, "quantity": 3},
                     {"item": grenade, "quantity": 2}]
