@@ -54,7 +54,7 @@ class Person:
 
     def choose_action(self):
         i = 1
-        print("Actions")
+        print("Choose an action")
         for item in self.actions:
             print(str(i), item)
             i += 1

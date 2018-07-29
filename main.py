@@ -32,17 +32,18 @@ def play():
 
     running = True
 
-    print("RPG")
+    print("=============================")
+    print("You have encountered an enemy")
     while running:
-        print("===================")
+        print("=============================")
         player.choose_action()
-        choice = input("Choose action: ")
+        choice = input()
         index = int(choice) - 1
 
         if index == 0:
             dmg = player.generate_damage()
             enemy.take_damage(dmg)
-            print("You attacked for", dmg)
+            print("You attacked the enemy for", dmg, "dmg")
         elif index == 1:
             player.choose_magic()
             magic_choice = int(input("Choose magic: ")) - 1
@@ -75,6 +76,12 @@ def play():
 
             item = player.items[item_choice]["item"]
 
+            if player.items[item_choice]["quantity"] == 0:
+                print("None left")
+                continue
+
+            player.items[item_choice]["quantity"] -= 1
+
             if item.type == "potion":
                 player.heal(item.prop)
                 print("Player uses", item.name, "heals for", item.prop, "HP")
@@ -92,12 +99,12 @@ def play():
 
         enemy_dmg = enemy.generate_damage()
         player.take_damage(enemy_dmg)
-        print("Enemy attacks for", enemy_dmg)
+        print("Enemy attacked you and dealt", enemy_dmg, "dmg")
 
         print("------------")
-        print("Enemies HP:", str(enemy.get_hp()))
-        print("Players HP:", str(player.get_hp()))
-        print("Players MP:", str(player.get_mp()))
+        print("Enemy HP:", str(enemy.get_hp()))
+        print("Player1 HP:", str(player.get_hp()))
+        print("Player1 MP:", str(player.get_mp()))
 
         if enemy.is_alive() == False:
             print("Victory! You have defeated the enemy!")
