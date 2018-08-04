@@ -1,23 +1,25 @@
 from classes.game import Person
 import random
 from classes.magic import Spell
-from classes.inventory import Item
-import classes.magic as magic
+from classes.items import Item
+import classes.magic as Magic
+import classes.items as Items
+
 
 def play():
 
-    potion = Item("Potion", "potion", "Heals 50 HP", 50)
-    hipotion = Item("Hi-potion", "potion", "Heals 100 HP", 100)
-    superpotion = Item("Super-potion", "potion", "Heals 500 HP", 500)
-    elixir = Item("Elixir", "elixir", "Fully restores HP and MP of one party member", 99999)
-    megaelixir = Item("Mega-elixir", "elixir", "Fully restores HP and MP of party", 99999)
+    # potion = Item("Potion", "potion", "Heals 50 HP", 50)
+    # hipotion = Item("Hi-potion", "potion", "Heals 100 HP", 100)
+    # superpotion = Item("Super-potion", "potion", "Heals 500 HP", 500)
+    # elixir = Item("Elixir", "elixir", "Fully restores HP and MP of one party member", 99999)
+    # megaelixir = Item("Mega-elixir", "elixir", "Fully restores HP and MP of party", 99999)
+    #
+    # grenade = Item("Grenade", "attack", "Deals 500 damage", 500)
 
-    grenade = Item("Grenade", "attack", "Deals 500 damage", 500)
-
-    player_magic = [magic.Fire(), magic.Thunder(), magic.Meteor(), magic.Cura()]
-    player_items = [{"item": potion, "quantity": 10},
-                    {"item": superpotion, "quantity": 3},
-                    {"item": grenade, "quantity": 2}]
+    player_magic = [Magic.Fire(), Magic.Thunder(), Magic.Meteor(), Magic.Cura()]
+    player_items = [{"item": Items.Potion(), "quantity": 10},
+                    {"item": Items.SuperPotion(), "quantity": 3},
+                    {"item": Items.Grenade(), "quantity": 2}]
 
     player = Person(460, 65, 60, 34, player_magic, player_items)
     enemy = Person(1200, 65, 45, 25, [], [])
@@ -35,6 +37,7 @@ def play():
         if index == 0:
             dmg = player.generate_damage()
             enemy.take_damage(dmg)
+            print("======================================")
             print("You attacked the enemy for", dmg, "dmg")
         elif index == 1:
             player.choose_magic()
@@ -55,9 +58,11 @@ def play():
 
             if spell.type == "white":
                 player.heal(magic_dmg)
+                print("======================================")
                 print("Player casts", spell.name, "and heals for", str(magic_dmg), "HP")
             elif spell.type == "black":
                 enemy.take_damage(magic_dmg)
+                print("======================================")
                 print("Player casts", spell.name, "and deals", str(magic_dmg), "dmg")
         elif index == 2:
             player.choose_item()
@@ -76,13 +81,16 @@ def play():
 
             if item.type == "potion":
                 player.heal(item.prop)
+                print("======================================")
                 print("Player uses", item.name, "heals for", item.prop, "HP")
             elif item.type == "elixir":
                 player.hp = player.maxhp
                 player.mp = player.maxmp
+                print("======================================")
                 print("Player uses", item.name, " and fully restores HP and MP")
             elif item.type == "attack":
                 enemy.take_damage(item.prop)
+                print("======================================")
                 print("Player uses", item.name, "and deals", item.prop, "dmg")
 
 
@@ -91,6 +99,7 @@ def play():
 
         enemy_dmg = enemy.generate_damage()
         player.take_damage(enemy_dmg)
+        print("======================================")
         print("Enemy attacked you and dealt", enemy_dmg, "dmg")
 
         print("------------")
@@ -99,11 +108,15 @@ def play():
         print("Player1 MP:", str(player.get_mp()))
 
         if enemy.is_alive() == False:
+            print("======================================")
             print("Victory! You have defeated the enemy!")
+            print("======================================")
             running = False
 
         if player.is_alive() == False:
+            print("======================================")
             print("You have been defeated!")
+            print("======================================")
             running = False
 
 play()
