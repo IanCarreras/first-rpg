@@ -2,8 +2,9 @@ import random
 from .magic import Spell
 import pprint
 
-class Person:
-    def __init__(self, hp, mp, atk, df, magic, items):
+class Person(object):
+    def __init__(self, name, hp, mp, atk, df, magic, items):
+        self.name = name
         self.maxhp = hp
         self.hp = hp
         self.maxmp = mp
@@ -54,6 +55,7 @@ class Person:
 
     def choose_action(self):
         i = 1
+        print("\n" + self.name)
         print("Choose an action")
         for item in self.actions:
             print(str(i), item)
@@ -74,3 +76,6 @@ class Person:
             print(i, item["item"].name, ":", item["item"].description, "x" + str(item["quantity"]))
             i += 1
         print("0 back to actions")
+
+    def get_stats(self):
+        print(self.name," " + str(self.hp) + "/" + str(self.maxhp), str(self.mp) + "/" + str(self.maxmp))
