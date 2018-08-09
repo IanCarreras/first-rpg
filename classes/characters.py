@@ -77,5 +77,25 @@ class Person(object):
             i += 1
         print("0 back to actions")
 
+    def choose_target(self, enemies):
+        i = 1
+        print("Target")
+        for enemy in enemies:
+            if enemy.get_hp() != 0:
+                print(str(i), enemy.name)
+                i += 1
+        choice = int(input("Choose Target: ")) - 1
+        return choice
+
     def get_stats(self):
-        print(self.name," " + str(self.hp) + "/" + str(self.maxhp), str(self.mp) + "/" + str(self.maxmp))
+        print(self.name," " + str(self.hp) + "/" + str(self.maxhp), "   ", str(self.mp) + "/" + str(self.maxmp))
+
+    def choose_enemy_spell(self):
+        magic_choice = random.randrange(0, len(self.magic))
+        spell = self.magic[magic_choice]
+        magic_dmg = spell.generate_damage()
+
+        if self.mp < spell.cost:
+            self.choose_enemy_spell()
+        else:
+            return spell, magic_dmg

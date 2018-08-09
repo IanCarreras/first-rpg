@@ -17,23 +17,28 @@ def play():
     player2 = Person("Witness   ", 460, 65, 60, 34, player_magic, player_items)
     player3 = Person("Novelist  ", 460, 65, 60, 34, player_magic, player_items)
     player4 = Person("Zealot    ", 460, 65, 60, 34, player_magic, player_items)
-    enemy = Person("Baba-Yaga  ", 1200, 65, 45, 25, [], [])
+    enemy1 = Person("Baba-Yaga  ", 1400, 65, 45, 25, [Magic.Fire()], [])
+    enemy2 = Person("Eld Fen    ", 1600, 65, 45, 25, [Magic.Meteor()], [])
+    enemy3 = Person("Parzival   ", 1200, 65, 45, 25, [Magic.Thunder()], [])
 
     players = [player1, player2, player3, player4]
+    enemies = [enemy1, enemy2, enemy3]
+    enemy = random.randrange(0, 3)
 
     running = True
 
     print("================================")
-    print("You have encountered " + enemy.name)
+    print("You have encountered " + enemies[enemy].name)
     print("================================")
 
 
     while running:
         print("\n")
-        print("                    HP    MP")
-        enemy.get_stats()
+        print("                    HP       MP")
+        for enemy in enemies:
+            enemy.get_stats()
         print("\n")
-        print("                 HP    MP")
+        print("                 HP       MP")
         for player in players:
             player.get_stats()
 
@@ -45,9 +50,14 @@ def play():
 
             if index == 0:
                 dmg = player.generate_damage()
-                enemy.take_damage(dmg)
+                enemy = player.choose_target(enemies)
+                enemies[enemy].take_damage(dmg)
                 print("======================================")
-                print("The " + player.name.strip() + " attacked " + enemy.name.strip() + " for", dmg, "dmg")
+                print("The " + player.name.strip() + " attacked " + enemies[enemy].name.strip() + " for", dmg, "dmg")
+
+                if enemies[enemy].get_hp() == 0:
+                    print(enemies[enemy].name, " has been defeated")
+                    del enemies[enemy]
             elif index == 1:
                 player.choose_magic()
                 magic_choice = int(input("Choose magic: ")) - 1
@@ -70,9 +80,14 @@ def play():
                     print("======================================")
                     print(player.name.strip() + " casts", spell.name, "and heals for", str(magic_dmg), "HP")
                 elif spell.type == "black":
-                    enemy.take_damage(magic_dmg)
+                    enemy = player.choose_target(enemies)
+                    enemies[enemy].take_damage(magic_dmg)
                     print("======================================")
-                    print(player.name.strip() + " casts", spell.name, "and deals", str(magic_dmg), "dmg")
+                    print(player.name.strip() + " casts", spell.name, "and deals", str(magic_dmg), "dmg to ", enemies[enemy].name)
+                    if enemies[enemy].get_hp() == 0:
+                        print(enemies[enemy].name, " has been defeated")
+                        del enemies[enemy]
+
             elif index == 2:
                 player.choose_item()
                 item_choice = int(input("Choose item: ")) - 1
@@ -93,34 +108,71 @@ def play():
                     print("======================================")
                     print(player.name.strip() + " uses", item.name, "heals for", item.prop, "HP")
                 elif item.type == "elixir":
-                    player.hp = player.maxhp
-                    player.mp = player.maxmp
+
+                    if item.name == "Mega-elixir":
+                        for i in players:
+                            i.hp = i.maxhp
+                            i.mp = i.maxmp
+                    else:
+                        player.hp = player.maxhp
+                        player.mp = player.maxmp
                     print("======================================")
                     print(player.name.strip() + " uses", item.name, " and fully restores HP and MP")
                 elif item.type == "attack":
-                    enemy.take_damage(item.prop)
+                    enemy = player.choose_target(enemies)
+                    enemies[enemy].take_damage(item.prop)
                     print("======================================")
-                    print(player.name.strip() + " uses", item.name, "and deals", item.prop, "dmg")
+                    print(player.name.strip() + " uses", item.name, "and deals", item.prop, "dmg to ", enemies[enemy].name)
 
+                    if enemies[enemy].get_hp() == 0:
+                        print(enemies[enemy].name, " has been defeated")
+                        del enemies[enemy]
 
+        defeated_enemies = 0
+        defeated_players = 0
 
-        enemy_choice = 1
+        for enemy in enemies:
+            if enemy.get_hp() == 0:
+                defeated_enemies += 1
 
-        enemy_dmg = enemy.generate_damage()
-        player1.take_damage(enemy_dmg)
-        print("======================================")
-        print(enemy.name.strip() + " attacked the " + player1.name.strip() + " and dealt", enemy_dmg, "dmg")
+        for player in players:
+            if player.get_hp() == 0:
+                defeated_players += 1
 
-        if enemy.is_alive() == False:
+        if defeated_players == 2:
             print("======================================")
             print("Victory! You have defeated the enemy!")
             print("======================================")
             running = False
 
-        if player.is_alive() == False:
+        if defeated_players == 2:
             print("======================================")
             print("You have been defeated!")
             print("======================================")
             running = False
+
+        for enemy in enemies:
+            enemy_choice = random.randrange(0, 2)
+
+            if enemy_choice == 0:
+                target = random.randrange(0, 3)
+                enemy_dmg = enemies[0].generate_damage()
+                players[target].take_damage(enemy_dmg)
+                print("======================================")
+                print(enemy.name.strip() + " attacked the " + players[target].name.strip() + " and dealt", enemy_dmg, "dmg")
+
+            elif enemy_choice == 1:
+                spell, magic_dmg = enemy.choose_enemy_spell()
+                enemy.reduce_mp(spell.cost)
+
+                elif spell.type == "black":
+                    target = random.randrange(0, 3)
+                    players[target].take_damage(magic_dmg)
+                    print("======================================")
+                    print(enemy.name.strip() + " casts", spell.name, "and deals", str(magic_dmg), "dmg to the", players[target].name)
+                    if players[target].get_hp() == 0:
+                        print(players[taget].name, " has been defeated")
+                        del players[player]
+
 
 play()
